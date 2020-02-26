@@ -39,28 +39,14 @@ public class VideoCache30SModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void syncBackground(String url, Promise promise){
-        try {
-            backgroundSyncVideo(url, promise);
-        } catch (IOException e) {
-            promise.reject(e);
-        }
+        Thread th = new SyncThread(this.getProxy(), promise, url);
+        th.start();
     }
 
     @ReactMethod
     public void isCached(String url, Promise promise) {
         if (this.proxy == null) promise.resolve(false);
         promise.resolve(this.proxy.isCached(url));
-    }
-
-    public void backgroundSyncVideo(String url, Promise promise) throws IOException {
-        String spec = this.getProxy().getProxyUrl(url);
-        URL proxyUrl = new URL(spec);
-        InputStream inputStream = proxyUrl.openStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        int length = 0;
-        while ((length = inputStream.read(buffer)) != -1) {}
-        promise.resolve(spec);
     }
 
     @ReactMethod
