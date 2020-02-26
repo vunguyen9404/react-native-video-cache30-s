@@ -1,8 +1,8 @@
 {
   "name": "@30shine/react-native-video-cache30-s",
   "title": "React Native Video Cache 30S",
-  "version": "1.0.0",
-  "description": "Native module for Andoid!",
+  "version": "1.0.1",
+  "description": "React native modules for android caching video and sync background App TNKH!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

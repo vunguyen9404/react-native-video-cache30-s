@@ -1,5 +1,7 @@
 package com.reactlibrary;
 
+import android.telecom.Call;
+
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -32,18 +34,11 @@ public class VideoCache30SModule extends ReactContextBaseJavaModule {
     public void convert(
             String url,
             Promise promise) {
-        if (this.proxy == null) {
-            this.proxy = new HttpProxyCacheServer.Builder(this.reactContext)
-                    .maxCacheFilesCount(20)
-                    .maxCacheSize(1073741824)
-                    .build();
-        }
-        promise.resolve(this.proxy.getProxyUrl(url));
+        promise.resolve(this.getProxy().getProxyUrl(url));
     }
 
     @ReactMethod
     public void syncBackground(String url, Promise promise){
-        if (this.proxy == null) promise.reject("204", "Proxy cache server is stopped!");
         try {
             backgroundSyncVideo(url, promise);
         } catch (IOException e) {
@@ -58,7 +53,7 @@ public class VideoCache30SModule extends ReactContextBaseJavaModule {
     }
 
     public void backgroundSyncVideo(String url, Promise promise) throws IOException {
-        String spec = this.proxy.getProxyUrl(url);
+        String spec = this.getProxy().getProxyUrl(url);
         URL proxyUrl = new URL(spec);
         InputStream inputStream = proxyUrl.openStream();
         int bufferSize = 1024;
@@ -75,7 +70,18 @@ public class VideoCache30SModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public String helloWorld(String name) {
-        return  "Hello " + name;
+    public void helloWorld(String name, Callback callback) {
+        callback.invoke("Hello " + name + "! i reply from native module!");
+    }
+
+    public HttpProxyCacheServer getProxy() {
+        if (this.proxy == null) {
+            this.proxy = new HttpProxyCacheServer.Builder(this.reactContext)
+                    .maxCacheFilesCount(20)
+                    .maxCacheSize(1073741824)
+                    .build();
+        }
+
+        return this.proxy;
     }
 }
