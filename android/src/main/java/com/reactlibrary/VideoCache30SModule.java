@@ -45,8 +45,7 @@ public class VideoCache30SModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void isCached(String url, Promise promise) {
-        if (this.proxy == null) promise.resolve(false);
-        promise.resolve(this.proxy.isCached(url));
+        promise.resolve(this.getProxy().isCached(url));
     }
 
     @ReactMethod
